@@ -8,13 +8,16 @@ lib_dir = ./lib
 src_dir = src/
 obj_dir = ./objects/
 
+dll_dir = bin/
+dlls = $(wildcard $(dll_dir)*.dll )
+
 src_files = $(wildcard */*.cpp */*/*.cpp )
 objects = $(src_files:$(src_dir)/%.cpp=$(obj_dir)/%.o)
 
 all: main
 
 main: $(objects)
-	$(CXX) -I$(inc_dir) -o $@ $^ -L$(lib_dir) $(LINK_FLAGS) 
+	$(CXX) -I$(inc_dir) -o $@ $^ $(dlls) -L$(lib_dir) $(LINK_FLAGS) 
 
 .PHONY : clean
 clean:
