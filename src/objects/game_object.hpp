@@ -16,6 +16,11 @@ public:
         m_hitbox.top = 0.0f;
         m_rect_shape.setFillColor(sf::Color(255, 255, 255));
         m_rect_shape.setSize(sf::Vector2f(100, 100));
+        
+        if(!m_texture.loadFromFile("./textures/test/rock.png")){
+            std::cerr << "Failed to load texture\n";
+        }
+        m_sprite.setTexture(m_texture);
     }
     // inline explicit GameObject(sf::Vector2f pos, sf::Color col){
     //     m_pos = pos;
@@ -43,14 +48,15 @@ public:
         else if (cam_state == CameraState::lock){
             t_pos = m_pos - cam_pos;
         }
-        m_rect_shape.setPosition(t_pos);
-        win->draw(m_rect_shape);
+        m_sprite.setPosition(t_pos);
+        win->draw(m_sprite);
     }
 
 private:
     sf::Vector2f m_pos;
     sf::FloatRect m_hitbox;
     sf::RectangleShape m_rect_shape;
+    sf::Texture m_texture;
     sf::Sprite m_sprite;
 
 };
