@@ -36,18 +36,9 @@ public:
 
     inline void draw(sf::RenderWindow *win, State *state){
         // t_pos is the screenspace position
-        sf::Vector2f t_pos;
-        CameraState cam_state = state->get_camera_state();
         sf::Vector2f cam_pos = state->get_camera_pos();
+        sf::Vector2f t_pos = m_pos - cam_pos;
 
-        // Setting the screenspace pos of the player depending
-        // on the camera state
-        if (cam_state == CameraState::follow){
-            t_pos = m_pos - cam_pos;
-        }
-        else if (cam_state == CameraState::lock){
-            t_pos = m_pos - cam_pos;
-        }
         m_sprite.setPosition(t_pos);
         win->draw(m_sprite);
     }
