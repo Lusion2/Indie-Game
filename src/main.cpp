@@ -8,7 +8,7 @@
 
 int main()
 {
-    std::cout << "\033[32mInitializing\033[0m\n";
+    std::cout << "\033[33mInitializing\033[0m\n";
     sf::RenderWindow win(sf::VideoMode(WIDTH, HEIGHT), WINDOW_TITLE);
     win.setFramerateLimit(60);
 
