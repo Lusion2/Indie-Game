@@ -8,5 +8,6 @@
         "**/Thumbs.db": true,
         "*.dll": true
     },
-    "explorerExclude.backup": {}
+    "explorerExclude.backup": {},
+    "C_Cpp.default.compilerPath": "C:\\msys64\\mingw64\\bin\\g++.exe"
 }

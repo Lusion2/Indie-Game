@@ -8,6 +8,7 @@
 
 int main()
 {
+    std::cout << "\033[32mInitializing\033[0m\n";
     sf::RenderWindow win(sf::VideoMode(WIDTH, HEIGHT), WINDOW_TITLE);
     win.setFramerateLimit(60);
 
@@ -18,6 +19,7 @@ int main()
     GameObject obj;
     game.add_object(&obj);
 
+    std::cout << "\033[32mSuccessfully Began running!\033[0m\n";
     while (win.isOpen()){
         game.on_update();
         game.on_render();

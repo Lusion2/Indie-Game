@@ -22,15 +22,16 @@ void Player::draw(sf::RenderWindow *win, State *state, bool DEBUG){
     else if (cam_state == CameraState::lock){
         t_pos = m_pos + PlayerOffset - cam_pos;
     }
-    m_hitbox.setPosition(t_pos + HitBoxOffset);
+    m_hitbox.left = t_pos.x + HitBoxOffset.x;
+    m_hitbox.top = t_pos.y + HitBoxOffset.y;
 
     // Draw the hitbox if DEBUG is true
     if(DEBUG){
-        m_hitbox.setFillColor(sf::Color(255, 255, 255));
-        win->draw(m_hitbox);
-    }
-    else{
-        m_hitbox.setFillColor(sf::Color(0, 0, 0));
+        sf::RectangleShape hitbox;
+        hitbox.setSize(sf::Vector2f(m_hitbox.width, m_hitbox.height));
+        hitbox.setPosition(sf::Vector2f(m_hitbox.left, m_hitbox.top));
+        hitbox.setFillColor(sf::Color(255, 255, 255));
+        win->draw(hitbox);
     }
 
     m_sprite.setPosition(t_pos);

@@ -1,7 +1,7 @@
 #include "game.hpp"
 
-// *******************
-// PUBLIC FUNCTIONS
+//*******************
+//*PUBLIC FUNCTIONS
 //*******************
 void Game::on_update(){
     // Update deltaTime
@@ -14,12 +14,15 @@ void Game::on_update(){
     // Update the player and the camera position
     m_player->update(&m_keys);
     if(m_state->get_camera_state() == CameraState::follow){
-        m_state->set_camera_pos(m_player->get_pos());
+        m_state->set_camera_pos(*m_player->get_pos());
     }
 
-    // for (GameObject *obj : m_objs){
-    //     obj->update();
-    // }
+    for (GameObject *obj : m_objs){
+        if(obj->check_collision(m_player->get_hitbox())){
+            // TODO: Handle collision
+        }
+        // obj->update();
+    }
 }
 
 void Game::on_render(){
@@ -31,15 +34,15 @@ void Game::on_render(){
 
     // Draw each game object
     for(GameObject *obj : m_objs){
-        obj->draw(m_win, m_state);
+        obj->draw(m_win, m_state, DEBUG);
     }
 
     // Display the frame
     m_win->display();
 }
 
-// *******************
-// PRIVATE FUNCTIONS
+//*******************
+//*PRIVATE FUNCTIONS
 //*******************
 void Game::check_keypresses(){
     sf::Keyboard k;
