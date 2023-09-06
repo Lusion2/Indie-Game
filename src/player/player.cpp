@@ -4,6 +4,21 @@
 #include "../game/state.hpp"
 #include "player.hpp"
 
+bool Player::load_texture(){
+    // Handle the texture and sprite initialization
+    if (!m_texture.loadFromFile("./textures/characters/Protag(V1).png")){
+        return false;
+    }
+    sf::Vector2f textureSize = static_cast<sf::Vector2f>(m_texture.getSize());
+
+    m_sprite.setTexture(m_texture);
+    m_sprite.setScale(2, 2);
+    m_hitbox = static_cast<sf::FloatRect>(m_sprite.getTextureRect());
+    m_hitbox.width += 12;
+    m_hitbox.height += 60; // Yeah I pulled these numbers out of my ass
+    return true;
+}
+
 void Player::update(Keys *keys){
     move(keys);
 }

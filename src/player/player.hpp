@@ -20,29 +20,17 @@ const static float playerSpeed = 10;
 
 class Player{
 public:
-
+    Player() = default;
     inline explicit Player(int hp, std::string name){
         m_hp = hp;
         m_name = name;
         m_pos = PlayerStartingPos;
-        
-        // Handle the texture and sprite initialization
-        if(!m_texture.loadFromFile("./textures/characters/Protag(V1).png")){
-            std::cerr << "Failed to load texture" << std::endl;
-        }
-        sf::Vector2f textureSize = static_cast<sf::Vector2f>(m_texture.getSize());
-
-        m_sprite.setTexture(m_texture);
-        m_sprite.setScale(2, 2);
-        m_hitbox = static_cast<sf::FloatRect>(m_sprite.getTextureRect());
-        m_hitbox.width += 12;
-        m_hitbox.height += 60; // Yeah I pulled these numbers out of my ass
     }
     inline ~Player(){}
 
+    bool load_texture();
     void update(Keys *keys);
     void draw(sf::RenderWindow *win, State *state, bool DEBUG = false);
-
 
     inline sf::Vector2f* get_pos(){
         return &m_pos;

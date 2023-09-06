@@ -9,21 +9,13 @@
 int main()
 {
     std::cout << "\033[33mInitializing\033[0m\n";
-    sf::RenderWindow win(sf::VideoMode(WIDTH, HEIGHT), WINDOW_TITLE);
-    win.setFramerateLimit(60);
-
-    Player player(100, "Grace");
-    State state(CameraState::lock);
-    Game game(&win, &state, &player);
+    Game game;
 
     GameObject obj;
     game.add_object(&obj);
 
-    std::cout << "\033[32mSuccessfully Began running!\033[0m\n";
-    while (win.isOpen()){
-        game.on_update();
-        game.on_render();
-    }
+    std::cout << "\033[32mSuccessfully Initialized!\033[0m\n";
+    game.main_loop();
 
     return 0;
 }
