@@ -4,10 +4,11 @@
 #include "../game/state.hpp"
 #include "player.hpp"
 
-bool Player::load_texture(){
+void Player::load_texture(){
     // Handle the texture and sprite initialization
     if (!m_texture.loadFromFile("./textures/characters/Protag(V1).png")){
-        return false;
+        std::cerr << "\033[31mError Loading Player Sprite. Closing program\033[0m\n";
+        exit(EXIT_FAILURE);
     }
     sf::Vector2f textureSize = static_cast<sf::Vector2f>(m_texture.getSize());
 
@@ -16,7 +17,6 @@ bool Player::load_texture(){
     m_hitbox = static_cast<sf::FloatRect>(m_sprite.getTextureRect());
     m_hitbox.width += 12;
     m_hitbox.height += 60; // Yeah I pulled these numbers out of my ass
-    return true;
 }
 
 void Player::update(Keys *keys){

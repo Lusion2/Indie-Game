@@ -3,18 +3,6 @@
 //*******************
 //*PUBLIC FUNCTIONS
 //*******************
-
-bool Game::init(){
-    m_player = Player(100, "Grace");
-    m_state = State(CameraState::lock);
-    m_win.create(sf::VideoMode(WIDTH, HEIGHT), WINDOW_TITLE);
-    m_win.setFramerateLimit(60);
-    if(!m_win.isOpen()){
-        return false;
-    }
-    return true;
-}
-
 void Game::on_update(){
     // Update deltaTime
     m_deltaTime = m_clock.getElapsedTime().asSeconds();

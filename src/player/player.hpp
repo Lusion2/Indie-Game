@@ -28,7 +28,7 @@ public:
     }
     inline ~Player(){}
 
-    bool load_texture();
+    void load_texture();
     void update(Keys *keys);
     void draw(sf::RenderWindow *win, State *state, bool DEBUG = false);
 

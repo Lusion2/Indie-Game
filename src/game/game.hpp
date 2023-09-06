@@ -19,15 +19,10 @@ public:
             exit(EXIT_FAILURE);
         }
         m_player = Player(100, "Grace");
-        if(!m_player.load_texture()){
-            std::cerr << "\033[31mError Initializing Player Sprite. Closing program\033[0m\n";
-            exit(EXIT_FAILURE);
-        }
+        m_player.load_texture();
         m_state = State(CameraState::lock);
     }
     inline ~Game(){}
-
-    bool init();
 
     void on_update();
     void on_render();
