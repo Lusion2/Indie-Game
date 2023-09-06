@@ -5,8 +5,10 @@ LINK_FLAGS = -lsfml-graphics -lsfml-window -lsfml-system
 
 inc_dir = ./include
 lib_dir = ./lib
-src_dir = src/
+src_dir = ./src/
 obj_dir = ./objects/
+
+build_dir = ./build
 
 src_files = $(wildcard */*.cpp */*/*.cpp )
 objects = $(src_files:$(src_dir)/%.cpp=$(obj_dir)/%.o)
@@ -14,7 +16,7 @@ objects = $(src_files:$(src_dir)/%.cpp=$(obj_dir)/%.o)
 all: main
 
 main: $(objects)
-	$(CXX) -I$(inc_dir) -o $@ $^ -L$(lib_dir) $(LINK_FLAGS) 
+	$(CXX) -I$(inc_dir) -o $(build_dir)/main.exe $^ -L$(lib_dir) $(LINK_FLAGS) 
 
 .PHONY : clean
 clean:

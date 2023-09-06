@@ -6,7 +6,8 @@
         "**/CVS": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        "*.dll": true
+        "*.dll": true,
+        "build/*.dll": true
     },
     "explorerExclude.backup": {},
     "C_Cpp.default.compilerPath": "C:\\msys64\\mingw64\\bin\\g++.exe"
