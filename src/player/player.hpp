@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <string>
+#include "../animation/animator.hpp"
 #include "../util/keys.hpp"
 #include "../game/state.hpp"
 #include "../util/constants.hpp"
@@ -25,8 +26,9 @@ public:
         m_hp = hp;
         m_name = name;
         m_pos = PlayerStartingPos;
+        m_animator = Animator("./textures/test/characters/test_sprite_sheet.png");
     }
-    inline ~Player(){}
+    ~Player(){}
 
     void load_texture();
     void update(Keys *keys);
@@ -37,6 +39,10 @@ public:
     }
     inline sf::FloatRect* get_hitbox(){
         return &m_hitbox;
+    }
+
+    inline void set_sprite(sf::Sprite sprite){
+        m_sprite = sprite;
     }
 
 private:
@@ -53,6 +59,8 @@ private:
     sf::FloatRect m_hitbox;
     
     PlayerState m_state;
+
+    Animator m_animator;
 
 };
 

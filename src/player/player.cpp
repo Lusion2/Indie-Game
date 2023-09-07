@@ -2,21 +2,31 @@
 #include "../util/keys.hpp"
 #include "../util/vector.hpp"
 #include "../game/state.hpp"
+#include "../animation/animator.hpp"
 #include "player.hpp"
 
 void Player::load_texture(){
     // Handle the texture and sprite initialization
-    if (!m_texture.loadFromFile("./textures/characters/Protag(V1).png")){
-        std::cerr << "\033[31mError Loading Player Sprite. Closing program\033[0m\n";
-        exit(EXIT_FAILURE);
-    }
-    sf::Vector2f textureSize = static_cast<sf::Vector2f>(m_texture.getSize());
+    // if (!m_texture.loadFromFile("./textures/characters/Protag(V1).png")){
+    //     std::cerr << "\033[31mError Loading Player Sprite. Closing program\033[0m\n";
+    //     exit(EXIT_FAILURE);
+    // }
+    // sf::Vector2f textureSize = static_cast<sf::Vector2f>(m_texture.getSize());
 
-    m_sprite.setTexture(m_texture);
+    m_animator.load_sprites();
+    m_sprite = m_animator.get_sprite(m_state);
+
+    // m_sprite.setTexture(m_texture);
+    // m_hitbox = static_cast<sf::FloatRect>(m_sprite.getTextureRect());
+    sf::FloatRect sprite_rect = m_sprite.getGlobalBounds();
+    m_hitbox.left = sprite_rect.left;
+    m_hitbox.top = sprite_rect.top;
+    m_hitbox.width = sprite_rect.width;
+    m_hitbox.height = sprite_rect.height;
     m_sprite.setScale(2, 2);
-    m_hitbox = static_cast<sf::FloatRect>(m_sprite.getTextureRect());
-    m_hitbox.width += 12;
-    m_hitbox.height += 60; // Yeah I pulled these numbers out of my ass
+
+    // m_hitbox.width += 12;
+    // m_hitbox.height += 60; // Yeah I pulled these numbers out of my ass
 }
 
 void Player::update(Keys *keys){
@@ -45,7 +55,9 @@ void Player::draw(sf::RenderWindow *win, State *state, bool DEBUG){
         sf::RectangleShape hitbox;
         hitbox.setSize(sf::Vector2f(m_hitbox.width, m_hitbox.height));
         hitbox.setPosition(sf::Vector2f(m_hitbox.left, m_hitbox.top));
-        hitbox.setFillColor(sf::Color(255, 255, 255));
+        hitbox.setFillColor(sf::Color(0, 0, 0, 0));
+        hitbox.setOutlineColor(sf::Color(255, 255, 255));
+        hitbox.setOutlineThickness(HITBOX_DRAW_SIZE);
         win->draw(hitbox);
     }
 

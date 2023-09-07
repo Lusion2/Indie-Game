@@ -112,11 +112,25 @@ void Game::load_map(){
 void Game::check_all_collisions(){
     // Handle GameObject logic and drawing
     // This is done in the render loop so we don't need to loop through all the objects twice per frame
-    for(GameObject obj : m_objs){
+    for(GameObject &obj : m_objs){
         if(obj.onscreen && obj.check_collision(m_player.get_hitbox())){
+            debug_collision();
             // TODO: Handle Collisions
         }
         obj.draw(&m_win, &m_state, DEBUG);
+    }
+}
+
+void Game::debug_collision(){
+    if(DEBUG){
+        std::stringstream buffer;
+        buffer << "CURRENTLY COLLIDING";
+        sf::Text out(buffer.str(), m_font, 20);
+        out.setFillColor(sf::Color(150, 150, 150));
+        out.setOutlineColor(sf::Color(0, 0, 0));
+        out.setOutlineThickness(5);
+        out.setPosition(WIDTH / 2, HEIGHT / 2);
+        m_win.draw(out);
     }
 }
 

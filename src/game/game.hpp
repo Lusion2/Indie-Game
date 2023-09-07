@@ -58,6 +58,7 @@ private:
         }
     }
 
+    void debug_collision();
     void check_all_collisions();
     void draw_all_objs();
 
