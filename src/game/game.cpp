@@ -66,6 +66,7 @@ void Game::draw_debug()
     switch((int)DEBUG){
         case 1:
             buffer << "On";
+            out.setFillColor(sf::Color(200, 24, 32));
             break;
         case 0:
             buffer << "Off";
@@ -78,6 +79,7 @@ void Game::draw_debug()
     out.setString(buffer.str());
     out.setPosition(0, 30);
     m_win.draw(out);
+    out.setFillColor(sf::Color(150, 150, 150));
     buffer.str("");
     buffer << "Camera Mode: ";
     switch(m_state.get_camera_state()){
@@ -126,7 +128,7 @@ void Game::debug_collision(){
         std::stringstream buffer;
         buffer << "CURRENTLY COLLIDING";
         sf::Text out(buffer.str(), m_font, 20);
-        out.setFillColor(sf::Color(150, 150, 150));
+        out.setFillColor(sf::Color(200, 50, 25));
         out.setOutlineColor(sf::Color(0, 0, 0));
         out.setOutlineThickness(5);
         out.setPosition(WIDTH / 2, HEIGHT / 2);
