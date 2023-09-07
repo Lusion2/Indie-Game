@@ -4,9 +4,11 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
+#include <thread>
 #include "../player/player.hpp"
 #include "../objects/game_object.hpp"
 #include "../util/keys.hpp"
+#include "../level_data/level.hpp"
 
 class Game{
 public:
@@ -18,14 +20,22 @@ public:
             std::cerr << "\033[31mError Initializing Window. Closing program\033[0m\n";
             exit(EXIT_FAILURE);
         }
+        m_font.loadFromFile("./fonts/monospace.ttf");
         m_player = Player(100, "Grace");
         m_player.load_texture();
         m_state = State(CameraState::lock);
+        load_map();
+        for(GameObject &obj : m_objs){
+            obj.load_texture();
+        }
+        std::cout << "Number of GameObjects -> " << m_objs.size() << std::endl;
     }
     inline ~Game(){}
 
     void on_update();
     void on_render();
+    void draw_debug();
+    void load_map();
 
     void main_loop(){
         while(m_win.isOpen()){
@@ -34,7 +44,7 @@ public:
         }
     }
 
-    inline void add_object(GameObject *obj){
+    inline void add_object(GameObject obj){
         m_objs.push_back(obj);
     }
 
@@ -59,14 +69,19 @@ private:
 
     // TIMEKEEPING
     sf::Clock m_clock;
-    float m_deltaTime;
-    float m_timeSinceLastKeyPress;
+    float m_deltaTime = 0;
+    float m_lastFrameTime = 0;
+    float m_timeSinceLastKeyPress = 0;
 
     // Keeping track of the game objects
-    std::vector<GameObject*> m_objs;
+    std::vector<GameObject> m_objs;
+
+    // Font stuff
+    sf::Font m_font;
 
     // DEBUG toggle
     bool DEBUG = false;
+
 };
 
 #endif

@@ -10,16 +10,10 @@
 class GameObject{
 public:
 
-    inline explicit GameObject(){
-        m_pos = {0.0f, 0.0f};
-        m_hitbox.left = 0.0;
-        m_hitbox.top = 0.0f;
-        
-        if(!m_texture.loadFromFile("./textures/test/rock.png")){
-            std::cerr << "Failed to load texture\n";
-        }
-        m_sprite.setTexture(m_texture);
-        m_hitbox = static_cast<sf::FloatRect>(m_sprite.getTextureRect());
+    inline explicit GameObject(float x, float y){
+        m_pos = {x, y};
+        m_hitbox.left = x;
+        m_hitbox.top = y;
     }
     inline ~GameObject(){}
 
@@ -28,6 +22,10 @@ public:
         sf::Vector2f cam_pos = state->get_camera_pos();
         sf::Vector2f m_offset_pos = m_pos - cam_pos;
         m_hitbox.left = m_offset_pos.x; m_hitbox.top = m_offset_pos.y;
+
+        if(m_sprite.getTexture() == NULL){
+            load_texture();
+        }
 
         if(DEBUG){
             sf::RectangleShape hitbox;
@@ -39,7 +37,15 @@ public:
         }
 
         m_sprite.setPosition(m_offset_pos);
-        win->draw(m_sprite);
+        if (m_offset_pos.x > WIDTH || m_offset_pos.x + m_hitbox.width < 0 ||
+            m_offset_pos.y > HEIGHT || m_offset_pos.y + m_hitbox.height < 0){
+                onscreen = false;
+                return;
+            }
+        else{
+            onscreen = true;
+            win->draw(m_sprite);
+        }
     }
 
     inline bool check_collision(sf::FloatRect *hit){
@@ -51,12 +57,24 @@ public:
         }
     }
 
+    inline void load_texture(){
+        if(!m_texture.loadFromFile("./textures/test/rock.png")){
+            std::cerr << "Failed to load texture\n";
+            exit(EXIT_FAILURE);
+        }
+        m_sprite.setTexture(m_texture);
+        m_hitbox = static_cast<sf::FloatRect>(m_sprite.getTextureRect());
+    }
+
+    bool onscreen;
+
 private:
     sf::Vector2f m_pos;
     sf::Vector2f m_offset_pos;
     sf::FloatRect m_hitbox;
     sf::Texture m_texture;
     sf::Sprite m_sprite;
+
 
 };
 

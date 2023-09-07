@@ -1,11 +1,20 @@
+#include <iomanip>
+#include <sstream>
+#include <thread>
+#include <string>
 #include "game.hpp"
+#include "../level_data/level.hpp"
 
 //*******************
 //*PUBLIC FUNCTIONS
 //*******************
 void Game::on_update(){
     // Update deltaTime
-    m_deltaTime = m_clock.getElapsedTime().asSeconds();
+    float currentTime = m_clock.getElapsedTime().asSeconds();
+    m_deltaTime = currentTime - m_lastFrameTime;
+
+    // std::cout << std::setprecision(6);
+    // std::cout << "Delta time: " << m_deltaTime << "      FPS: " << 1.0f / m_deltaTime << std::endl; 
 
     // Poll events and keypresses
     poll_events();
@@ -17,12 +26,7 @@ void Game::on_update(){
         m_state.set_camera_pos(*m_player.get_pos());
     }
 
-    for (GameObject *obj : m_objs){
-        if(obj->check_collision(m_player.get_hitbox())){
-            // TODO: Handle collision
-        }
-        // obj->update();
-    }
+    m_lastFrameTime = currentTime;
 }
 
 void Game::on_render(){
@@ -32,13 +36,75 @@ void Game::on_render(){
     // Draw the player
     m_player.draw(&m_win, &m_state, DEBUG);
 
-    // Draw each game object
-    for(GameObject *obj : m_objs){
-        obj->draw(&m_win, &m_state, DEBUG);
+    // Handle game object logic and drawing
+    // This is done in the render loop so we don't need to loop through all the objects twice per frame
+    for(GameObject obj : m_objs){
+        if(obj.onscreen && obj.check_collision(m_player.get_hitbox())){
+            // TODO: Handle Collisions
+        }
+        obj.draw(&m_win, &m_state, DEBUG);
     }
+
+    // Draw the debug info
+    draw_debug();
 
     // Display the frame
     m_win.display();
+}
+
+//*********************
+//* Drawing debug info
+//*********************
+void Game::draw_debug(){
+    std::stringstream buffer;
+    buffer << "FPS: " << (int)(1.0f / m_deltaTime);
+    sf::Text out(buffer.str(), m_font, 20);
+    out.setFillColor(sf::Color(150, 150, 150));
+    out.setOutlineColor(sf::Color(0, 0, 0));
+    out.setOutlineThickness(5);
+    out.setPosition(0, 0);
+    m_win.draw(out);
+    buffer.str("");
+    buffer << "Debug Mode: ";
+    switch((int)DEBUG){
+        case 1:
+            buffer << "On";
+            break;
+        case 0:
+            buffer << "Off";
+            break;
+        default:
+            break;
+    }
+    out.setString(buffer.str());
+    out.setPosition(0, 30);
+    m_win.draw(out);
+    buffer.str("");
+    buffer << "Camera Mode: ";
+    switch(m_state.get_camera_state()){
+        case CameraState::follow:
+            buffer << "Follow";
+            break;
+        case CameraState::lock:
+            buffer << "Lock";
+            break;
+        default:
+            break;
+    }
+    out.setString(buffer.str());
+    out.setPosition(0, 60);
+    m_win.draw(out);
+}
+
+void Game::load_map(){
+    for(int y = 0; y < LEVEL.size(); y++){
+        for(int x = 0; x < LEVEL.at(y).size(); x++){
+            if(LEVEL.at(y).at(x) == 1){
+                GameObject obj(x * BLOCKSIZE, y * BLOCKSIZE);
+                add_object(obj);
+            }
+        }
+    }
 }
 
 //*******************
@@ -74,7 +140,7 @@ void Game::check_keypresses(){
         m_keys.enter = true;
     }
     if (k.isKeyPressed(k.F1)){
-        if (m_deltaTime - m_timeSinceLastKeyPress >= 0.25){
+        if (m_lastFrameTime - m_timeSinceLastKeyPress >= 0.25){
             DEBUG = !DEBUG;
             if(DEBUG){
                 std::cout << "\33[34mDEBUG: \33[1mTrue\033[0m\n";
@@ -82,19 +148,19 @@ void Game::check_keypresses(){
             else{
                 std::cout << "\033[33mDEBUG: \033[1mFalse\033[0m\n";
             }
-            m_timeSinceLastKeyPress = m_deltaTime;
+            m_timeSinceLastKeyPress = m_lastFrameTime;
         }
     }
     if (k.isKeyPressed(k.F2)){
-        if (m_deltaTime - m_timeSinceLastKeyPress >= 0.25){
+        if (m_lastFrameTime - m_timeSinceLastKeyPress >= 0.25){
             m_state.set_camera_state(CameraState::lock);
-            m_timeSinceLastKeyPress = m_deltaTime;
+            m_timeSinceLastKeyPress = m_lastFrameTime;
         }
     }
     if (k.isKeyPressed(k.F3)){
-        if (m_deltaTime - m_timeSinceLastKeyPress >= 0.25){
+        if (m_lastFrameTime - m_timeSinceLastKeyPress >= 0.25){
             m_state.set_camera_state(CameraState::follow);
-            m_timeSinceLastKeyPress = m_deltaTime;
+            m_timeSinceLastKeyPress = m_lastFrameTime;
         }
     }
 }
