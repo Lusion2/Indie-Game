@@ -10,3 +10,5 @@ After, type ./build/main and it will run the application.
 
 # Additional Info
 This project is in its extremely early stages, development will likely be slow and I'll probably soon add a development roadmap to the repository... maybe.
+
+P.S. I know the code is probably not super well written but this is one of my first large projects so I'm still learning.
