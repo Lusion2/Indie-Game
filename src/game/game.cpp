@@ -175,12 +175,6 @@ void Game::check_keypresses(){
         // Swap debug modes
         if (m_lastFrameTime - m_timeSinceLastKeyPress >= 0.25){
             DEBUG = !DEBUG;
-            if(DEBUG){
-                std::cout << "\33[34mDEBUG: \33[1mTrue\033[0m\n";
-            }
-            else{
-                std::cout << "\033[33mDEBUG: \033[1mFalse\033[0m\n";
-            }
             m_timeSinceLastKeyPress = m_lastFrameTime;
         }
     }
