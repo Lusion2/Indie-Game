@@ -9,4 +9,4 @@ After, type ./build/main and it will run the application.
 - SFML
 
 # Additional Info
-This project is in its extremely early stages, development will be quick and I'll probably soon add a development roadmap to the repository... maybe.
+This project is in its extremely early stages, development will likely be slow and I'll probably soon add a development roadmap to the repository... maybe.
