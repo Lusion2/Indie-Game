@@ -1,11 +1,5 @@
-#include <SFML/Graphics.hpp>
 #include <iostream>
 #include "game/game.hpp"
-#include "game/state.hpp"
-#include "objects/game_object.hpp"
-#include "player/player.hpp"
-#include "util/constants.hpp"
-#include "level_data/level.hpp"
 
 int main()
 {
