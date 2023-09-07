@@ -38,6 +38,7 @@ public:
     void load_map();
 
     void main_loop(){
+        m_win.setActive(false);
         while(m_win.isOpen()){
             on_update();
             on_render();
@@ -57,6 +58,9 @@ private:
                 m_win.close();
         }
     }
+
+    void check_all_collisions();
+    void draw_all_objs();
 
     void check_keypresses();
     

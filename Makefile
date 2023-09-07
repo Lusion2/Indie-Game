@@ -16,7 +16,7 @@ objects = $(src_files:$(src_dir)/%.cpp=$(obj_dir)/%.o)
 all: main
 
 main: $(objects)
-	$(CXX) -I$(inc_dir) -o $(build_dir)/main.exe $^ -L$(lib_dir) $(LINK_FLAGS) 
+	$(CXX) -std=c++20 -I$(inc_dir) -o $(build_dir)/main.exe $^ -L$(lib_dir) $(LINK_FLAGS) 
 
 .PHONY : clean
 clean:

@@ -13,18 +13,16 @@ void Game::on_update(){
     float currentTime = m_clock.getElapsedTime().asSeconds();
     m_deltaTime = currentTime - m_lastFrameTime;
 
-    // std::cout << std::setprecision(6);
-    // std::cout << "Delta time: " << m_deltaTime << "      FPS: " << 1.0f / m_deltaTime << std::endl; 
-
     // Poll events and keypresses
     poll_events();
     check_keypresses();
-
+    
     // Update the player and the camera position
     m_player.update(&m_keys);
     if(m_state.get_camera_state() == CameraState::follow){
         m_state.set_camera_pos(*m_player.get_pos());
     }
+
 
     m_lastFrameTime = currentTime;
 }
@@ -32,18 +30,11 @@ void Game::on_update(){
 void Game::on_render(){
     // Clear the screen
     m_win.clear();
-    
+
     // Draw the player
     m_player.draw(&m_win, &m_state, DEBUG);
 
-    // Handle game object logic and drawing
-    // This is done in the render loop so we don't need to loop through all the objects twice per frame
-    for(GameObject obj : m_objs){
-        if(obj.onscreen && obj.check_collision(m_player.get_hitbox())){
-            // TODO: Handle Collisions
-        }
-        obj.draw(&m_win, &m_state, DEBUG);
-    }
+    check_all_collisions();
 
     // Draw the debug info
     draw_debug();
@@ -110,6 +101,23 @@ void Game::load_map(){
 //*******************
 //*PRIVATE FUNCTIONS
 //*******************
+void Game::check_all_collisions(){
+    // Handle game object logic and drawing
+    // This is done in the render loop so we don't need to loop through all the objects twice per frame
+    for(GameObject obj : m_objs){
+        if(obj.onscreen && obj.check_collision(m_player.get_hitbox())){
+            // TODO: Handle Collisions
+        }
+        obj.draw(&m_win, &m_state, DEBUG);
+    }
+}
+
+void Game::draw_all_objs(){
+    for(GameObject obj : m_objs){
+        obj.draw(&m_win, &m_state, DEBUG);
+    }
+}
+
 void Game::check_keypresses(){
     sf::Keyboard k;
     m_keys.w = false;
