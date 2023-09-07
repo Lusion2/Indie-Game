@@ -38,7 +38,6 @@ public:
     void load_map();
 
     void main_loop(){
-        m_win.setActive(false);
         while(m_win.isOpen()){
             on_update();
             on_render();

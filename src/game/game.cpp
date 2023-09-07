@@ -9,7 +9,7 @@
 //*PUBLIC FUNCTIONS
 //*******************
 void Game::on_update(){
-    // Update deltaTime
+    // Update time stuff
     float currentTime = m_clock.getElapsedTime().asSeconds();
     m_deltaTime = currentTime - m_lastFrameTime;
 
@@ -23,7 +23,7 @@ void Game::on_update(){
         m_state.set_camera_pos(*m_player.get_pos());
     }
 
-
+    // Update the last frame time
     m_lastFrameTime = currentTime;
 }
 
@@ -34,6 +34,8 @@ void Game::on_render(){
     // Draw the player
     m_player.draw(&m_win, &m_state, DEBUG);
 
+    // Check obj collisions and drawing
+    // TODO: I do not want to loop through all the objs twice... need to find a better solution than doing it in the render function
     check_all_collisions();
 
     // Draw the debug info
@@ -46,7 +48,9 @@ void Game::on_render(){
 //*********************
 //* Drawing debug info
 //*********************
-void Game::draw_debug(){
+void Game::draw_debug()
+{
+    // Begin with displaying the FPS
     std::stringstream buffer;
     buffer << "FPS: " << (int)(1.0f / m_deltaTime);
     sf::Text out(buffer.str(), m_font, 20);
@@ -55,6 +59,8 @@ void Game::draw_debug(){
     out.setOutlineThickness(5);
     out.setPosition(0, 0);
     m_win.draw(out);
+
+    // Display the Debug mode
     buffer.str("");
     buffer << "Debug Mode: ";
     switch((int)DEBUG){
@@ -67,6 +73,8 @@ void Game::draw_debug(){
         default:
             break;
     }
+
+    // Display the current camera mode
     out.setString(buffer.str());
     out.setPosition(0, 30);
     m_win.draw(out);
@@ -102,7 +110,7 @@ void Game::load_map(){
 //*PRIVATE FUNCTIONS
 //*******************
 void Game::check_all_collisions(){
-    // Handle game object logic and drawing
+    // Handle GameObject logic and drawing
     // This is done in the render loop so we don't need to loop through all the objects twice per frame
     for(GameObject obj : m_objs){
         if(obj.onscreen && obj.check_collision(m_player.get_hitbox())){
@@ -148,6 +156,7 @@ void Game::check_keypresses(){
         m_keys.enter = true;
     }
     if (k.isKeyPressed(k.F1)){
+        // Swap debug modes
         if (m_lastFrameTime - m_timeSinceLastKeyPress >= 0.25){
             DEBUG = !DEBUG;
             if(DEBUG){
@@ -160,12 +169,14 @@ void Game::check_keypresses(){
         }
     }
     if (k.isKeyPressed(k.F2)){
+        // Switch the camera state to lock
         if (m_lastFrameTime - m_timeSinceLastKeyPress >= 0.25){
             m_state.set_camera_state(CameraState::lock);
             m_timeSinceLastKeyPress = m_lastFrameTime;
         }
     }
     if (k.isKeyPressed(k.F3)){
+        // Switch the camera state to follow
         if (m_lastFrameTime - m_timeSinceLastKeyPress >= 0.25){
             m_state.set_camera_state(CameraState::follow);
             m_timeSinceLastKeyPress = m_lastFrameTime;
