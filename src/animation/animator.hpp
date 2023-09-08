@@ -7,25 +7,17 @@
 enum class PlayerState;
 
 // This class will be added to an object that requires animation
-class Animator{
+class CAnimator{
 public:
-    Animator() = default;
-    inline explicit Animator(const std::string &path){
+    CAnimator() = default;
+    inline explicit CAnimator(const std::string &path){
         m_path = path;
     }
-    inline ~Animator(){}
+    inline ~CAnimator() {}
 
-    inline void load_sprites(){
-        m_sheet.loadFromFile(m_path);
-        sf::Sprite sprite;
-        sprite.setTexture(m_sheet);
-        sprite.setTextureRect(static_cast<sf::IntRect>(sf::FloatRect(12, 0, 32, 56)));
-        m_sprites.push_back(sprite);
-    }
+    void load_sprites();
 
-    inline sf::Sprite get_sprite(PlayerState state){
-        return m_sprites[0];
-    }
+    sf::Sprite get_sprite(PlayerState state);
 
 private:
 

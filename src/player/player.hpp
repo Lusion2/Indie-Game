@@ -26,7 +26,7 @@ public:
         m_hp = hp;
         m_name = name;
         m_pos = PlayerStartingPos;
-        m_animator = Animator("./textures/test/characters/test_sprite_sheet.png");
+        m_animator = CAnimator("./textures/test/characters/test_sprite_sheet.png");
     }
     ~Player(){}
 
@@ -60,8 +60,8 @@ private:
     
     PlayerState m_state;
 
-    Animator m_animator;
-
+    CAnimator m_animator;
+    
 };
 
 #endif
