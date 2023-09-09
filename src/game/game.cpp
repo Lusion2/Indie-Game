@@ -18,7 +18,7 @@ void Game::on_update(){
     check_keypresses();
     
     // Update the player and the camera position
-    m_player.update(&m_keys);
+    m_player.update(&m_keys, currentTime);
     if(m_state.get_camera_state() == CameraState::follow){
         m_state.set_camera_pos(*m_player.get_pos());
     }
@@ -117,7 +117,9 @@ void Game::check_all_collisions(){
     for(GameObject &obj : m_objs){
         if(obj.onscreen && obj.check_collision(m_player.get_hitbox())){
             debug_collision();
-            // TODO: Handle Collisions
+            if(!obj.get_hitbox()->contains(*m_player.get_pos())){
+                m_player.set_pos(*m_player.get_last_pos());
+            }
         }
         obj.draw(&m_win, &m_state, DEBUG);
     }

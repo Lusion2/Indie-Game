@@ -7,6 +7,6 @@
 
 #define WINDOW_TITLE    "Indie Game v0.0.1"
 
-#define HITBOX_DRAW_SIZE    1
+#define HITBOX_DRAW_OUTLINE_SIZE    1
 
 #endif

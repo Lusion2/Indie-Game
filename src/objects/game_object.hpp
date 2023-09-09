@@ -40,7 +40,7 @@ public:
                 hitbox.setFillColor(sf::Color(0, 0, 0, 0));
                 hitbox.setSize(sf::Vector2f(m_hitbox.width, m_hitbox.height));
                 hitbox.setOutlineColor(sf::Color(255, 255, 255));
-                hitbox.setOutlineThickness(HITBOX_DRAW_SIZE);
+                hitbox.setOutlineThickness(HITBOX_DRAW_OUTLINE_SIZE);
                 hitbox.setPosition(sf::Vector2f(m_hitbox.left, m_hitbox.top));
                 win->draw(hitbox);
             }
@@ -65,6 +65,13 @@ public:
         m_hitbox.top = sprite_pos.y;
         m_hitbox.width = sprite_size.width;
         m_hitbox.height = sprite_size.height;
+    }
+
+    inline sf::Vector2f *get_pos(){
+        return &m_pos;
+    }
+    inline sf::FloatRect *get_hitbox(){
+        return &m_hitbox;
     }
 
     bool onscreen;

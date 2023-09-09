@@ -6,31 +6,69 @@
 #include "player.hpp"
 
 void Player::load_texture(){
-    // Handle the texture and sprite initialization
-    // if (!m_texture.loadFromFile("./textures/characters/Protag(V1).png")){
-    //     std::cerr << "\033[31mError Loading Player Sprite. Closing program\033[0m\n";
-    //     exit(EXIT_FAILURE);
-    // }
-    // sf::Vector2f textureSize = static_cast<sf::Vector2f>(m_texture.getSize());
-
     m_animator.load_sprites();
-    m_sprite = m_animator.get_sprite(m_state);
+    m_sprite = m_animator.get_sprite(m_state, 0);
 
-    // m_sprite.setTexture(m_texture);
-    // m_hitbox = static_cast<sf::FloatRect>(m_sprite.getTextureRect());
     sf::FloatRect sprite_rect = m_sprite.getGlobalBounds();
     m_hitbox.left = sprite_rect.left;
     m_hitbox.top = sprite_rect.top;
     m_hitbox.width = sprite_rect.width;
     m_hitbox.height = sprite_rect.height;
     m_sprite.setScale(2, 2);
-
-    // m_hitbox.width += 12;
-    // m_hitbox.height += 60; // Yeah I pulled these numbers out of my ass
 }
 
-void Player::update(Keys *keys){
+void Player::update(Keys *keys, float deltaTime){
+    m_last_pos = m_pos;
     move(keys);
+    update_animation(deltaTime);
+}
+
+void Player::update_animation(float deltaTime){
+    set_animation_data();
+    
+    // This whole thing is a bit confusing to read because of the m_current_animation pointer, so I'll explain it
+    //
+    // First we check if it's time to update the animation frame or check if there's been a state change, if so, update the frame
+    // After, we check if we've reached the end of the animation, then we reset the animation to zero
+    // Then we set the sprite to the current animation frame using the animator component, flip it if it needs to be flipped,
+    // and update the hitbox 
+    //
+    if(deltaTime - m_current_animation->time_last_frame >= m_current_animation->time_between_frames || m_state != m_prev_state){
+        if(m_state != m_prev_state){
+            m_current_animation->curr_anim_frame = 0;
+        }
+        m_current_animation->time_last_frame = deltaTime;
+        if(m_current_animation->curr_anim_frame < m_current_animation->anim_frames){
+            m_current_animation->curr_anim_frame++;
+        }
+        if(m_current_animation->curr_anim_frame == m_current_animation->anim_frames){
+            m_current_animation->curr_anim_frame = 0;
+        }
+        m_sprite = m_animator.get_sprite(m_state, m_current_animation->curr_anim_frame);
+        sf::FloatRect sprite_rect = m_sprite.getGlobalBounds();
+        
+        // Flip the sprite if we face left
+        if(m_dir == EntityDir::left){
+            sf::IntRect texture_rect = m_sprite.getTextureRect();
+            m_sprite.setTextureRect(sf::IntRect(texture_rect.left + texture_rect.width, texture_rect.top, -texture_rect.width, texture_rect.height));
+        }
+        m_hitbox = sprite_rect;
+        m_sprite.setScale(2, 2);
+        m_prev_state = m_state;
+    }
+}
+
+void Player::set_animation_data(){
+    switch(m_state){
+        case PlayerState::idle:
+            m_current_animation = &m_idle_data;
+            break;
+        case PlayerState::walk:
+            m_current_animation = &m_walk_data;
+            break;
+        default:
+            break;
+    }
 }
 
 void Player::draw(sf::RenderWindow *win, State *state, bool DEBUG){
@@ -57,7 +95,7 @@ void Player::draw(sf::RenderWindow *win, State *state, bool DEBUG){
         hitbox.setPosition(sf::Vector2f(m_hitbox.left, m_hitbox.top));
         hitbox.setFillColor(sf::Color(0, 0, 0, 0));
         hitbox.setOutlineColor(sf::Color(255, 255, 255));
-        hitbox.setOutlineThickness(HITBOX_DRAW_SIZE);
+        hitbox.setOutlineThickness(HITBOX_DRAW_OUTLINE_SIZE);
         win->draw(hitbox);
     }
 
@@ -81,10 +119,12 @@ void Player::move(Keys *keys){
     if(keys->a){
         dir.x -= 1;
         m_state = PlayerState::walk;
+        m_dir = EntityDir::left;
     }
     if(keys->d){
         dir.x += 1;
         m_state = PlayerState::walk;
+        m_dir = EntityDir::right;
     }
     
     // Normalize the direction to fix faster speeds when going diagonal
