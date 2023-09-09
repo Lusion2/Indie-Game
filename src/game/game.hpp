@@ -85,6 +85,7 @@ private:
 
     // DEBUG toggle
     bool DEBUG = false;
+    bool NOCLIP = false;
 
 };
 

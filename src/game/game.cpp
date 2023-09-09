@@ -74,11 +74,30 @@ void Game::draw_debug()
         default:
             break;
     }
-
-    // Display the current camera mode
     out.setString(buffer.str());
     out.setPosition(0, 30);
     m_win.draw(out);
+
+    // Display the NOCLIP mode
+    buffer.str("");
+    buffer << "Noclip Mode: ";
+    switch((int)NOCLIP){
+        case 1:
+            buffer << "On";
+            out.setFillColor(sf::Color(200, 24, 32));
+            break;
+        case 0:
+            buffer << "Off";
+            out.setFillColor(sf::Color(150, 150, 150));
+            break;
+        default:
+            break;
+    }
+    out.setString(buffer.str());
+    out.setPosition(0, 60);
+    m_win.draw(out);
+
+    // Display the current camera mode
     out.setFillColor(sf::Color(150, 150, 150));
     buffer.str("");
     buffer << "Camera Mode: ";
@@ -93,7 +112,7 @@ void Game::draw_debug()
             break;
     }
     out.setString(buffer.str());
-    out.setPosition(0, 60);
+    out.setPosition(0, 90);
     m_win.draw(out);
 }
 
@@ -115,10 +134,12 @@ void Game::check_all_collisions(){
     // Handle GameObject logic and drawing
     // This is done in the render loop so we don't need to loop through all the objects twice per frame
     for(GameObject &obj : m_objs){
-        if(obj.onscreen && obj.check_collision(m_player.get_hitbox())){
-            debug_collision();
-            if(!obj.get_hitbox()->contains(*m_player.get_pos())){
-                m_player.set_pos(*m_player.get_last_pos());
+        if(!NOCLIP){
+            if(obj.onscreen && obj.check_collision(m_player.get_hitbox())){
+                debug_collision();
+                if(!obj.get_hitbox()->contains(*m_player.get_pos())){
+                    m_player.set_pos(*m_player.get_last_pos());
+                }
             }
         }
         obj.draw(&m_win, &m_state, DEBUG);
@@ -183,14 +204,21 @@ void Game::check_keypresses(){
     if (k.isKeyPressed(k.F2)){
         // Switch the camera state to lock
         if (m_lastFrameTime - m_timeSinceLastKeyPress >= 0.25){
-            m_state.set_camera_state(CameraState::lock);
+            NOCLIP = !NOCLIP;
             m_timeSinceLastKeyPress = m_lastFrameTime;
         }
     }
     if (k.isKeyPressed(k.F3)){
         // Switch the camera state to follow
         if (m_lastFrameTime - m_timeSinceLastKeyPress >= 0.25){
-            m_state.set_camera_state(CameraState::follow);
+            switch(m_state.get_camera_state()){
+                case CameraState::follow:
+                    m_state.set_camera_state(CameraState::lock);
+                    break;
+                case CameraState::lock:
+                    m_state.set_camera_state(CameraState::follow);
+                    break;
+            }
             m_timeSinceLastKeyPress = m_lastFrameTime;
         }
     }
